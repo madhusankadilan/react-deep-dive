@@ -24,6 +24,8 @@ GitHub Random Repo Finder: State-based API fetching.
 
 Book Tracking Library: CRUD operations with an external API.
 
+Theme implementation. (Light theme, Dark theme)
+
 ### Intermediate
 Optimistic UI Comment System: Instant UI updates with "rollback" logic.
 

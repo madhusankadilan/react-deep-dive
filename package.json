@@ -1,16 +1,18 @@
 {
-  "name": "react-deep-dive",
-  "private": true,
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:todo-app": "pnpm --filter todo-app dev",
-    "dev:flash-cards-app": "pnpm --filter flash-cards-app dev"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.33.0"
+   "name": "react-deep-dive",
+   "private": true,
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "dev:todo-app": "pnpm --filter todo-app dev",
+      "test:todo-app": "pnpm --filter todo-app test",
+      "dev:flash-cards-app": "pnpm --filter flash-cards-app dev",
+      "test:browser": "vitest"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "packageManager": "pnpm@10.33.0"
 }

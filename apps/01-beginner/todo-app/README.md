@@ -1,75 +1,202 @@
-# React + TypeScript + Vite
+# Todo App - React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Testing
+1. Unit Testing (Logic in Isolation)
+Tool: Vitest + React Testing Library
 
-Currently, two official plugins are available:
+Unit tests focus on individual "units" of code—usually a single function or a stateless component. They are extremely fast and should make up the bulk of your test suite.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Target: Your TodoItem component or a helper like validateInput().
 
-## React Compiler
+Test Case: "Does the TodoItem render the correct text and apply the line-through class when isCompleted is true?"
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+The Goal: Ensure that small pieces of the UI behave correctly regardless of the rest of the app.
 
-Note: This will impact Vite dev & build performances.
+2. Integration Testing (Component Interaction)
+Tool: Vitest + React Testing Library
 
-## Expanding the ESLint configuration
+This is the "sweet spot" for React. Instead of testing one component, you test a feature (e.g., the TodoList interacting with the AddTaskForm).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Target: The App.tsx or a feature container.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Test Case: 1.  User types "Master Playwright" into the input.
+2.  User clicks the "Add Task" button.
+3.  Assertion: Check that the input is now empty and the list contains exactly one <li> with the text "Master Playwright."
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The Goal: Ensure that state flows correctly between components.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+ Test Pyramid with User Interface Tests, Integration Tests and Unit Tests 
+3. Snapshot Testing (UI Regression)
+Tool: Vitest or Playwright
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Snapshot tests take a "picture" of your rendered component's HTML structure (or an actual image) and compare it to a stored version.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Target: Your styled components or layout.
+
+Test Case: "Has the DOM structure of my TodoItem changed since the last time I checked?"
+
+The Goal: Catch accidental UI changes. If you change a div to a span or modify a tailwind class, the test will fail and ask you: "Did you mean to change this?"
+
+4. E2E Automation Testing (The User's Journey)
+Tool: Playwright
+
+This is a full automation test. Playwright spins up a real browser (Chromium, Firefox, or WebKit) and interacts with your app like a human would.
+
+Target: The deployed application (or local dev server).
+
+Test Case:
+
+JavaScript
+test('user can complete a full workflow', async ({ page }) => {
+  await page.goto('http://localhost:3000');
+  await page.fill('.add-task-input', 'Finish UI Design');
+  await page.click('.add-task-button');
+  await page.click('.checkbox-icon'); // Mark as done
+  await expect(page.locator('.task-text')).toHaveCSS('text-decoration', /line-through/);
+  await page.click('.delete-icon');
+  await expect(page.locator('.task-text')).toHaveCount(0);
+});
+The Goal: Total confidence. If this test passes, you know the core functionality of your app isn't broken for the end user.
+
+1. Color Palette
+Primary Accent: #22C55E (Vibrant Green - used for buttons, active icons)
+
+Secondary/Background: #F0F9FF (Very Light Blue Gradient Start) to #FFFFFF (White - Main Background)
+
+Header/Text: #111827 (Near Black - Title)
+
+Subtle Text/Faded: #6B7280 (Medium Grey - Placeholders, Struck-through Text)
+
+Borders/Lines: #E5E7EB (Light Grey - Task Cards, Input Field, Separator)
+
+2. Typography
+Primary Font Family: Inter, sans-serif (A clean, modern sans-serif. Substitute with Roboto or Open Sans if preferred.)
+
+h1.app-title (Header):
+
+font-weight: 700; (Bold)
+
+font-size: 30px;
+
+letter-spacing: -0.025em;
+
+color: #111827;
+
+h2.section-title ("Active Tasks", "Completed"):
+
+font-weight: 600; (Semi-bold)
+
+font-size: 18px;
+
+color: #111827;
+
+text-transform: uppercase; (Optional, good for hierarchy)
+
+p.task-text (Normal Task):
+
+font-weight: 400; (Regular)
+
+font-size: 16px;
+
+color: #111827;
+
+p.task-text.completed (Completed Task):
+
+color: #6B7280;
+
+text-decoration: line-through;
+
+3. Main Input Area
+.input-container (Layout Wrapper):
+
+display: flex;
+
+gap: 12px; (Space between input and button)
+
+margin-bottom: 32px;
+
+.add-task-input:
+
+flex-grow: 1;
+
+background-color: #F9FAFB; (Very Light Grey)
+
+border: 1px solid #E5E7EB;
+
+border-radius: 8px;
+
+padding: 12px 16px;
+
+font-size: 16px;
+
+color: #111827;
+
+box-sizing: border-box;
+
+.add-task-button:
+
+background-color: #22C55E; (Accent Green)
+
+border: none;
+
+border-radius: 8px;
+
+color: #FFFFFF;
+
+padding: 12px 24px;
+
+font-weight: 600;
+
+font-size: 16px;
+
+cursor: pointer;
+
+4. Todo List Items (Cards)
+.todo-list (Main Container):
+
+display: flex;
+
+flex-direction: column;
+
+gap: 16px;
+
+.todo-item-card:
+
+display: flex;
+
+align-items: center; (Vertically center content)
+
+background-color: #FFFFFF;
+
+border: 1px solid #E5E7EB;
+
+border-radius: 12px;
+
+padding: 16px;
+
+box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); (Subtle shadow)
+
+position: relative;
+
+.checkbox-container (Holding the Checkbox):
+
+margin-right: 16px;
+
+.delete-icon (Trash Can):
+
+position: absolute;
+
+right: 16px;
+
+color: #D1D5DB; (Faded Grey by default)
+
+font-size: 18px;
+
+cursor: pointer;
+
+.completed-separator:
+
+border-top: 2px solid #E5E7EB;
+
+margin: 40px 0 24px 0;
