@@ -1,0 +1,4 @@
+packages:
+  # If apps directly under apps directory, go with 'apps/*'. Else 'apps/**'
+  - 'apps/**' 
+  - 'packages/*'
